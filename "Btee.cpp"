@@ -1,0 +1,185 @@
+#include<iostream>
+using namespace std;
+struct node
+{
+   public:
+   int data;
+   node *parent,*left,*right;
+   node()
+   {
+      parent=NULL;
+      left=NULL;
+      right=NULL;
+      data=0;
+   }
+};
+
+class BTree
+{
+   public:
+   node* root=NULL;
+
+
+void insert(node* val, int data)
+{ 
+   node* temp=new node;
+   temp->data=data;
+   if(root==NULL)
+   {
+     root=temp;
+   }
+   else
+   {
+   if(val->data>=data)
+   {
+     if(val->left!=NULL)
+     {
+       insert(val->left,data);
+     }
+     else
+     {
+        val->left=temp;
+        temp->parent=val;
+     }
+   }  
+   else
+   {
+     if(val->right!=NULL)
+     { 
+       insert(val->right, data);
+     }
+     else
+     {
+       val->right=temp;
+       temp->parent=val;
+     } 
+   }
+ }
+}
+
+
+void display(node* val)
+  {  
+   if(val==NULL)
+   {
+     return;
+   }
+   display(val->left);
+   cout<<val->data<<"\t";
+   display(val->right);
+ }
+
+
+void deletenode(int k, node* val)
+{
+  node* temp=root;
+  if(val==NULL)
+  {
+    cout<<"\n \n here is no element";
+    return;
+  }
+  
+  if(val->left==NULL && val->right==NULL)
+  {
+    node* part;
+    part=val->parent;
+    if(part->data>=val->data)
+    {
+      part->left=NULL;
+    }
+    else
+      part->right=NULL;
+    delete val;
+    
+  }
+  else if((val->left==NULL || val->right==NULL ))
+   {
+     node* part;
+     node* child;
+     part=val->parent; 
+     if(val->left==NULL)
+      child=val->right;
+     else
+      child=val->left;
+
+     if(part->data>=val->data)
+     {
+       part->left=child;
+       child->parent=part;
+     }
+     else
+     {
+       part->right=child;
+       child->parent=part;
+     }
+    delete val;
+   }
+  else
+  {
+    node* maxleft;
+    maxleft=val->left;
+    while(maxleft->right!=NULL)
+    {
+      maxleft=maxleft->right;
+    }
+   if(maxleft->left==NULL)
+   {
+     node* part=maxleft->parent;
+     part->right=NULL;
+     val->data=maxleft->data;
+   }
+   else
+   {
+     if(maxleft->left)
+   
+  };
+}
+
+
+node* searchnode(node* val, int data)
+{
+   node* temp=val;
+if(val!=NULL)
+{
+   if(temp->data==data)
+   {
+     cout<<"\nhere element is present";
+     return temp;
+   }
+   else if(temp->data>data)
+     return searchnode(temp->left,data);
+   else
+     return searchnode(temp->right, data);
+}
+else
+{ 
+  cout<<"\nElement is not present !";
+  return NULL;
+}
+}
+};
+
+int main()
+{
+   BTree BT;
+   int n;
+   cout<<"\n \nEnter the number of elements: ";
+   cin>>n;
+   for(int i=0;i<n;i++)
+   { cout<<"\ndata "<<(i+1)<<": ";
+     int num=0;
+     cin>>num;
+     BT.insert(BT.root,num);
+   }
+   BT.display(BT.root);
+   cout<<"\n \nEnter the element to be found: ";
+   cin>>n;   
+   node* x1=BT.searchnode(BT.root,n);
+   cout<<"\n \n";
+   cout<<"\n \nEnter the node to be deleted: ";
+   cin>>n;
+   node* x3=BT.searchnode(BT.root,n);
+   BT.deletenode(n,x3);
+   BT.display(BT.root);
+   return 0;
+}
